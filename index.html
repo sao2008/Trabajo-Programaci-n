@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Define la codificación para mostrar correctamente acentos y caracteres especiales. -->
+  <meta charset="UTF-8">
+  <!-- Hace que el diseño se adapte al ancho de celulares, tabletas y computadoras. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Describe brevemente el contenido de la página para el navegador. -->
+  <meta name="description" content="Panel de control interactivo de ejemplo.">
+  <!-- Establece el título que aparece en la pestaña del navegador. -->
+  <title>Dashboard | Mi Panel</title>
+  <style>
+    /* Define colores, sombras y medidas reutilizables en toda la página. */
+    :root {
+      --fondo: #fff8e8;
+      --superficie: #ffffff;
+      --texto: #29243a;
+      --suave: #77718a;
+      --acento: #ef9f27;
+      --acento-oscuro: #b96a12;
+      --borde: #f0dfc2;
+      --sombra: 0 12px 30px rgba(89, 61, 20, .09);
+    }
+    /* Quita márgenes predeterminados y calcula tamaños de forma consistente. */
+    * { box-sizing: border-box; }
+    /* Da estilo general al fondo y a la tipografía de la página. */
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    /* Organiza la barra lateral y el contenido principal en dos columnas. */
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    /* Da formato a la navegación lateral. */
+    aside {
+      background: #30263d;
+      color: white;
+      padding: 28px 20px;
+    }
+    /* Resalta el nombre del panel. */
+    .brand { font-size: 22px; font-weight: 800; margin-bottom: 35px; }
+    /* Ordena los enlaces del menú verticalmente. */
+    nav { display: grid; gap: 10px; }
+    /* Da formato a cada enlace de navegación. */
+    nav a {
+      color: #e9e1f0;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 10px;
+    }
+    /* Marca el enlace activo y el enlace sobre el que está el cursor. */
+    nav a:hover, nav a.active { background: #51415f; color: #ffd28b; }
+    /* Separa el contenido principal de los bordes de la pantalla. */
+    main { padding: 34px; min-width: 0; }
+    /* Alinea el título y el botón superior. */
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    /* Ajusta el tamaño del encabezado principal. */
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 36px); }
+    /* Usa un color más suave para el texto secundario. */
+    .muted { color: var(--suave); }
+    /* Da estilo al botón principal. */
+    button {
+      border: 0;
+      border-radius: 10px;
+      background: var(--acento);
+      color: #2b1b08;
+      padding: 12px 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    /* Oscurece el botón cuando el usuario pasa el cursor. */
+    button:hover { background: #f6b64e; }
+    /* Distribuye las tarjetas de resumen en una cuadrícula adaptable. */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 28px 0; }
+    /* Define el aspecto común de las tarjetas. */
+    .card {
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: 17px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+    }
+    /* Da formato al nombre de cada indicador. */
+    .stat-label { color: var(--suave); font-size: 14px; }
+    /* Destaca el número principal de cada tarjeta. */
+    .stat-number { font-size: 29px; font-weight: 800; margin: 10px 0; }
+    /* Coloca el gráfico y el bloque de actividad lado a lado. */
+    .content-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+    /* Ajusta el título de cada sección. */
+    h2 { font-size: 19px; margin: 0 0 18px; }
+    /* Organiza las barras del gráfico. */
+    .chart { display: flex; align-items: end; gap: 13px; height: 190px; padding: 12px 4px 0; }
+    /* Da forma y color a cada barra del gráfico. */
+    .bar { flex: 1; min-width: 12px; background: linear-gradient(#ffc86c, #e98d19); border-radius: 8px 8px 2px 2px; }
+    /* Coloca etiquetas debajo de las barras. */
+    .chart-labels { display: flex; justify-content: space-around; color: var(--suave); font-size: 12px; margin-top: 10px; }
+    /* Alinea cada elemento de actividad con su imagen. */
+    .activity { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+    /* Mantiene las imágenes de actividad del mismo tamaño. */
+    .activity img { width: 48px; height: 48px; object-fit: cover; border-radius: 12px; }
+    /* Separa el texto de la actividad en dos líneas. */
+    .activity p { margin: 3px 0; }
+    /* Da formato a la galería de recursos visuales. */
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    /* Ajusta las imágenes de la galería. */
+    .gallery img { width: 100%; height: 115px; object-fit: cover; border-radius: 12px; }
+    /* Da formato al mensaje que aparece al usar el botón. */
+    #notice { margin-top: 16px; color: var(--acento-oscuro); font-weight: 700; }
+    /* Cambia la distribución para pantallas medianas. */
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+    /* Convierte el menú en una franja superior en pantallas pequeñas. */
+    @media (max-width: 620px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { padding: 18px; }
+      .brand { margin-bottom: 14px; }
+      nav { grid-template-columns: repeat(2, 1fr); }
+      main { padding: 22px 16px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Agrupa la navegación y el contenido en la estructura principal. -->
+  <div class="layout">
+    <!-- Presenta el menú lateral de navegación del dashboard. -->
+    <aside>
+      <!-- Muestra el nombre de la aplicación. -->
+      <div class="brand">☀ Mi Dashboard</div>
+      <!-- Contiene enlaces internos para recorrer las secciones. -->
+      <nav>
+        <!-- Lleva al usuario al inicio de la página. -->
+        <a class="active" href="#inicio">⌂ Inicio</a>
+        <!-- Lleva al usuario a las estadísticas. -->
+        <a href="#estadisticas">▦ Estadísticas</a>
+        <!-- Lleva al usuario a la actividad reciente. -->
+        <a href="#actividad">◷ Actividad</a>
+        <!-- Lleva al usuario a la galería visual. -->
+        <a href="#galeria">▧ Galería</a>
+      </nav>
+    </aside>
+    <!-- Contiene todas las secciones principales del panel. -->
+    <main id="inicio">
+      <!-- Muestra el encabezado y el botón interactivo. -->
+      <header class="topbar">
+        <!-- Agrupa el título y su descripción. -->
+        <div>
+          <!-- Presenta el saludo principal. -->
+          <h1>¡Hola! Bienvenido</h1>
+          <!-- Explica el propósito de este panel de ejemplo. -->
+          <p class="muted">Aquí tienes el resumen de tu actividad.</p>
+        </div>
+        <!-- Permite actualizar el mensaje del panel con JavaScript. -->
+        <button id="updateButton" type="button">Actualizar panel</button>
+      </header>
+      <!-- Presenta cuatro indicadores principales. -->
+      <section class="stats" id="estadisticas">
+        <!-- Resume el número de visitas. -->
+        <article class="card"><div class="stat-label">Visitas</div><div class="stat-number">2,480</div><div class="muted">↑ 12% este mes</div></article>
+        <!-- Resume el número de usuarios. -->
+        <article class="card"><div class="stat-label">Usuarios</div><div class="stat-number">1,320</div><div class="muted">↑ 8% este mes</div></article>
+        <!-- Resume las tareas completadas. -->
+        <article class="card"><div class="stat-label">Tareas listas</div><div class="stat-number">86</div><div class="muted">↑ 15 esta semana</div></article>
+        <!-- Resume el porcentaje de progreso. -->
+        <article class="card"><div class="stat-label">Progreso</div><div class="stat-number">74%</div><div class="muted">Buen trabajo</div></article>
+      </section>
+      <!-- Divide la zona central entre un gráfico y la actividad reciente. -->
+      <section class="content-grid">
+        <!-- Muestra un gráfico de ejemplo creado con elementos HTML y CSS. -->
+        <article class="card">
+          <!-- Identifica el contenido del gráfico. -->
+          <h2>Resumen semanal</h2>
+          <!-- Representa siete valores mediante barras de distinta altura. -->
+          <div class="chart" aria-label="Gráfico de actividad semanal">
+            <!-- Barra correspondiente al lunes. -->
+            <div class="bar" style="height: 42%"></div>
+            <!-- Barra correspondiente al martes. -->
+            <div class="bar" style="height: 68%"></div>
+            <!-- Barra correspondiente al miércoles. -->
+            <div class="bar" style="height: 55%"></div>
+            <!-- Barra correspondiente al jueves. -->
+            <div class="bar" style="height: 85%"></div>
+            <!-- Barra correspondiente al viernes. -->
+            <div class="bar" style="height: 72%"></div>
+            <!-- Barra correspondiente al sábado. -->
+            <div class="bar" style="height: 96%"></div>
+            <!-- Barra correspondiente al domingo. -->
+            <div class="bar" style="height: 61%"></div>
+          </div>
+          <!-- Identifica los días representados en el gráfico. -->
+          <div class="chart-labels"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+        </article>
+        <!-- Presenta una lista de actividades recientes con imágenes. -->
+        <article class="card" id="actividad">
+          <!-- Nombra la lista de actividad. -->
+          <h2>Actividad reciente</h2>
+          <!-- Primera actividad con un recurso visual. -->
+          <div class="activity"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=120" alt="Computadora en un escritorio"><div><strong>Proyecto actualizado</strong><p class="muted">Hace 10 minutos</p></div></div>
+          <!-- Segunda actividad con un recurso visual. -->
+          <div class="activity"><img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=120" alt="Equipo trabajando"><div><strong>Nuevo equipo</strong><p class="muted">Hace 2 horas</p></div></div>
+          <!-- Tercera actividad con un recurso visual. -->
+          <div class="activity"><img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=120" alt="Persona revisando información"><div><strong>Reporte terminado</strong><p class="muted">Ayer</p></div></div>
+        </article>
+      </section>
+      <!-- Añade una galería con más recursos visuales para el proyecto. -->
+      <section class="card" id="galeria" style="margin-top: 18px">
+        <!-- Presenta el título de la galería. -->
+        <h2>Inspiración y recursos visuales</h2>
+        <!-- Agrupa tres imágenes adicionales. -->
+        <div class="gallery">
+          <!-- Imagen número cuatro del proyecto. -->
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" alt="Gráficas y estadísticas en una pantalla">
+          <!-- Imagen número cinco del proyecto. -->
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500" alt="Análisis de datos en una computadora">
+          <!-- Imagen número seis del proyecto. -->
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500" alt="Persona utilizando una computadora portátil">
+        </div>
+        <!-- Muestra una confirmación cuando se actualiza el panel. -->
+        <p id="notice" aria-live="polite">Tu panel está listo.</p>
+      </section>
+    </main>
+  </div>
+  <script>
+    // Busca el botón de actualización dentro del documento.
+    const updateButton = document.getElementById("updateButton");
+    // Busca el espacio donde se muestra el mensaje de estado.
+    const notice = document.getElementById("notice");
+    // Escucha el clic del usuario sobre el botón.
+    updateButton.addEventListener("click", function () {
+      // Obtiene la hora actual del dispositivo.
+      const currentTime = new Date().toLocaleTimeString("es-MX");
+      // Actualiza el mensaje para demostrar que la página es interactiva.
+      notice.textContent = "Panel actualizado correctamente a las " + currentTime;
+    });
+  </script>
+</body>
+</html>
